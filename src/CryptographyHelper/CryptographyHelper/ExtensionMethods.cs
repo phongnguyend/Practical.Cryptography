@@ -1,5 +1,6 @@
 ﻿using CryptographyHelper.HashAlgorithm;
 using CryptographyHelper.SymmetricAlgorithm;
+using System;
 
 namespace CryptographyHelper
 {
@@ -28,6 +29,16 @@ namespace CryptographyHelper
         public static TripleDES UseTripleDES(this byte[] data, byte[] key, byte[] iv)
         {
             return new TripleDES(data, key, iv);
+        }
+
+        public static byte[] Combine(this byte[] first, byte[] second)
+        {
+            var ret = new byte[first.Length + second.Length];
+
+            Buffer.BlockCopy(first, 0, ret, 0, first.Length);
+            Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
+
+            return ret;
         }
     }
 }
