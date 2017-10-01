@@ -9,6 +9,7 @@ namespace CryptographyHelper.Demo
         {
             UseHash();
             UseHMAC();
+            UsePBKDF2();
             UseAES();
             UseDES();
             UseTripleDES();
@@ -65,6 +66,18 @@ namespace CryptographyHelper.Demo
             Console.WriteLine("Encrypted Text = " + Convert.ToBase64String(encrypted));
             Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
 
+            Console.ReadLine();
+        }
+
+        private static void UsePBKDF2()
+        {
+            const string passwordToHash = "MyVeryComplexPassword";
+            var salt = Convert.FromBase64String("65QuFYgSxqIW0d9Y/QKRX9veWK0DOyX0g7+nbr9yux8=");
+
+            var hashedPassword = passwordToHash.UsePBKDF2(salt, 500000).GetBytes(32);
+
+            Console.WriteLine("Password to hash : " + passwordToHash);
+            Console.WriteLine("Hashed Password : " + Convert.ToBase64String(hashedPassword));
             Console.ReadLine();
         }
 
