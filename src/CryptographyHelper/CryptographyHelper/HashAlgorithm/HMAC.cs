@@ -35,6 +35,17 @@ namespace CryptographyHelper.HashAlgorithm
             }
         }
 
+        public byte[] Sha384
+        {
+            get
+            {
+                using (var hmac = new HMACSHA384(_key))
+                {
+                    return hmac.ComputeHash(_toBeHashed);
+                }
+            }
+        }
+
         public byte[] Sha512
         {
             get

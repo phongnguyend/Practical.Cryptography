@@ -33,6 +33,17 @@ namespace CryptographyHelper.HashAlgorithm
             }
         }
 
+        public byte[] Sha384
+        {
+            get
+            {
+                using (var sha384 = SHA384.Create())
+                {
+                    return sha384.ComputeHash(_toBeHashed);
+                }
+            }
+        }
+
         public byte[] Sha512
         {
             get
