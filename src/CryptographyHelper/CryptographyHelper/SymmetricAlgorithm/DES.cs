@@ -41,6 +41,7 @@ namespace CryptographyHelper.SymmetricAlgorithm
 
         public byte[] Decrypt()
         {
+            //https://github.com/dotnet/corefx/issues/24033
             using (var des = System.Security.Cryptography.DES.Create())
             {
                 des.Mode = CipherMode.CBC;
