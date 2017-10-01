@@ -1,6 +1,7 @@
 ﻿using CryptographyHelper.HashAlgorithm;
 using CryptographyHelper.SymmetricAlgorithm;
 using System;
+using System.Text;
 
 namespace CryptographyHelper
 {
@@ -9,6 +10,11 @@ namespace CryptographyHelper
         public static Hash UseHash(this byte[] data)
         {
             return new Hash(data);
+        }
+
+        public static Hash UseHash(this string data)
+        {
+            return new Hash(Encoding.UTF8.GetBytes(data));
         }
 
         public static HMAC UseHMAC(this byte[] data, byte[] key)
