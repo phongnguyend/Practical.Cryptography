@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptographyHelper.HashAlgorithms;
+using System;
 using System.Text;
 
 namespace CryptographyHelper.Demo
@@ -7,6 +8,7 @@ namespace CryptographyHelper.Demo
     {
         static void Main(string[] args)
         {
+            CalculateFileChecksum();
             UseHash();
             UseHash2();
             UseHMAC();
@@ -16,19 +18,25 @@ namespace CryptographyHelper.Demo
             UseTripleDES();
         }
 
+        private static void CalculateFileChecksum()
+        {
+            //string file = @"E:\Soft\anki-2.0.32.exe";
+            //string md5 = file.ToFileInfo().UseHash(Algorithm.MD5).HashedString;
+        }
+
         private static void UseTripleDES()
         {
             const string original = "Text to encrypt";
             var key = Convert.FromBase64String("e0x8U5MyotKHiY1uxqxurg==");
             var iv = Convert.FromBase64String("Z1kmtPGvz1g=");
 
-            var encrypted = Encoding.UTF8.GetBytes(original).UseTripleDES(key, iv).Encrypt();
+            var encrypted = original.ToBytes().UseTripleDES(key, iv).Encrypt();
             var decrypted = encrypted.UseTripleDES(key, iv).Decrypt();
 
             Console.WriteLine("Triple DES Encryption");
             Console.WriteLine();
             Console.WriteLine("Original Text = " + original);
-            Console.WriteLine("Encrypted Text = " + Convert.ToBase64String(encrypted));
+            Console.WriteLine("Encrypted Text = " + encrypted.ToBase64String());
             Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
 
             Console.ReadLine();
@@ -40,13 +48,13 @@ namespace CryptographyHelper.Demo
             var key = Convert.FromBase64String("cmjP+yg9d3Q=");
             var iv = Convert.FromBase64String("bFWtV5H1BDc=");
 
-            var encrypted = Encoding.UTF8.GetBytes(original).UseDES(key, iv).Encrypt();
+            var encrypted = original.ToBytes().UseDES(key, iv).Encrypt();
             var decrypted = encrypted.UseDES(key, iv).Decrypt();
 
             Console.WriteLine("DES Encryption");
             Console.WriteLine();
             Console.WriteLine("Original Text = " + original);
-            Console.WriteLine("Encrypted Text = " + Convert.ToBase64String(encrypted));
+            Console.WriteLine("Encrypted Text = " + encrypted.ToBase64String());
             Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
 
             Console.ReadLine();
@@ -58,13 +66,13 @@ namespace CryptographyHelper.Demo
             var key = Convert.FromBase64String("MeNFuKVG63Ks7dChmDvA67lSN6eKDE1QVuZT1dGCYlI=");
             var iv = Convert.FromBase64String("bXhlXQwu0R9qMjbCfEo7GA==");
 
-            var encrypted = Encoding.UTF8.GetBytes(original).UseAES(key, iv).Encrypt();
+            var encrypted = original.ToBytes().UseAES(key, iv).Encrypt();
             var decrypted = encrypted.UseAES(key, iv).Decrypt();
 
             Console.WriteLine("AES Encryption");
             Console.WriteLine();
             Console.WriteLine("Original Text = " + original);
-            Console.WriteLine("Encrypted Text = " + Convert.ToBase64String(encrypted));
+            Console.WriteLine("Encrypted Text = " + encrypted.ToBase64String());
             Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
 
             Console.ReadLine();
@@ -78,7 +86,7 @@ namespace CryptographyHelper.Demo
             var hashedPassword = passwordToHash.UsePBKDF2(salt, 500000).GetBytes(32);
 
             Console.WriteLine("Password to hash : " + passwordToHash);
-            Console.WriteLine("Hashed Password : " + Convert.ToBase64String(hashedPassword));
+            Console.WriteLine("Hashed Password : " + hashedPassword.ToBase64String());
             Console.ReadLine();
         }
 
@@ -86,56 +94,56 @@ namespace CryptographyHelper.Demo
         {
             const string originalMessage1 = "Original Message1 to hash";
             const string originalMessage2 = "Original Message2 to hash";
-            var key = Encoding.UTF8.GetBytes("myscretekey");
+            var key = "myscretekey".ToBytes();
 
             Console.WriteLine("Original Message 1 : " + originalMessage1);
             Console.WriteLine("Original Message 2 : " + originalMessage2);
             Console.WriteLine();
 
-            var hmacMd5ByteData1 = Encoding.UTF8.GetBytes(originalMessage1).UseHMAC(key).Md5;
-            var hmacMd5ByteData2 = Encoding.UTF8.GetBytes(originalMessage2).UseHMAC(key).Md5;
+            var hmacMd5ByteData1 = originalMessage1.ToBytes().UseHMAC(key, Algorithm.MD5).HashedBytes;
+            var hmacMd5ByteData2 = originalMessage2.ToBytes().UseHMAC(key, Algorithm.MD5).HashedBytes;
 
-            var hmacSha1ByteData1 = Encoding.UTF8.GetBytes(originalMessage1).UseHMAC(key).Sha1;
-            var hmacSha1ByteData2 = Encoding.UTF8.GetBytes(originalMessage2).UseHMAC(key).Sha1;
+            var hmacSha1ByteData1 = originalMessage1.ToBytes().UseHMAC(key, Algorithm.SHA1).HashedBytes;
+            var hmacSha1ByteData2 = originalMessage2.ToBytes().UseHMAC(key, Algorithm.SHA1).HashedBytes;
 
-            var hmacSha256ByteData1 = Encoding.UTF8.GetBytes(originalMessage1).UseHMAC(key).Sha256;
-            var hmacSha256ByteData2 = Encoding.UTF8.GetBytes(originalMessage2).UseHMAC(key).Sha256;
+            var hmacSha256ByteData1 = originalMessage1.ToBytes().UseHMAC(key, Algorithm.SHA256).HashedBytes;
+            var hmacSha256ByteData2 = originalMessage2.ToBytes().UseHMAC(key, Algorithm.SHA256).HashedBytes;
 
-            var hmacSha384ByteData1 = Encoding.UTF8.GetBytes(originalMessage1).UseHMAC(key).Sha384;
-            var hmacSha384ByteData2 = Encoding.UTF8.GetBytes(originalMessage2).UseHMAC(key).Sha384;
+            var hmacSha384ByteData1 = originalMessage1.ToBytes().UseHMAC(key, Algorithm.SHA384).HashedBytes;
+            var hmacSha384ByteData2 = originalMessage2.ToBytes().UseHMAC(key, Algorithm.SHA384).HashedBytes;
 
-            var hmacSha512ByteData1 = Encoding.UTF8.GetBytes(originalMessage1).UseHMAC(key).Sha512;
-            var hmacSha512ByteData2 = Encoding.UTF8.GetBytes(originalMessage2).UseHMAC(key).Sha512;
+            var hmacSha512ByteData1 = originalMessage1.ToBytes().UseHMAC(key, Algorithm.SHA512).HashedBytes;
+            var hmacSha512ByteData2 = originalMessage2.ToBytes().UseHMAC(key, Algorithm.SHA512).HashedBytes;
 
             Console.WriteLine();
             Console.WriteLine("MD5 HMAC");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(hmacMd5ByteData1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(hmacMd5ByteData2));
+            Console.WriteLine("Message 1 hash = " + hmacMd5ByteData1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + hmacMd5ByteData2.ToBase64String());
 
             Console.WriteLine();
             Console.WriteLine("SHA 1 HMAC");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(hmacSha1ByteData1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(hmacSha1ByteData2));
+            Console.WriteLine("Message 1 hash = " + hmacSha1ByteData1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + hmacSha1ByteData2.ToBase64String());
 
             Console.WriteLine();
             Console.WriteLine("SHA 256 HMAC");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(hmacSha256ByteData1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(hmacSha256ByteData2));
+            Console.WriteLine("Message 1 hash = " + hmacSha256ByteData1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + hmacSha256ByteData2.ToBase64String());
 
             Console.WriteLine();
             Console.WriteLine("SHA 384 HMAC");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(hmacSha384ByteData1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(hmacSha384ByteData2));
+            Console.WriteLine("Message 1 hash = " + hmacSha384ByteData1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + hmacSha384ByteData2.ToBase64String());
 
             Console.WriteLine();
             Console.WriteLine("SHA 512 HMAC");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(hmacSha512ByteData1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(hmacSha512ByteData2));
+            Console.WriteLine("Message 1 hash = " + hmacSha512ByteData1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + hmacSha512ByteData2.ToBase64String());
             Console.WriteLine();
 
             Console.ReadLine();
@@ -150,93 +158,96 @@ namespace CryptographyHelper.Demo
             Console.WriteLine("Original Message 2 : " + originalMessage2);
             Console.WriteLine();
 
-            var md5Hashed1 = originalMessage1.UseHash().Md5;
-            var md5Hashed2 = originalMessage2.UseHash().Md5;
+            var md5Hashed1 = originalMessage1.UseHash(Algorithm.MD5).HashedBytes;
+            var md5Hashed2 = originalMessage2.UseHash(Algorithm.MD5).HashedBytes;
 
-            var sha1Hashed1 = originalMessage1.UseHash().Sha1;
-            var sha1Hashed2 = originalMessage2.UseHash().Sha1;
+            var sha1Hashed1 = originalMessage1.UseHash(Algorithm.SHA1).HashedBytes;
+            var sha1Hashed2 = originalMessage2.UseHash(Algorithm.SHA1).HashedBytes;
 
-            var sha256Hashed1 = originalMessage1.UseHash().Sha256;
-            var sha256Hashed2 = originalMessage2.UseHash().Sha256;
+            var sha256Hashed1 = originalMessage1.UseHash(Algorithm.SHA256).HashedBytes;
+            var sha256Hashed2 = originalMessage2.UseHash(Algorithm.SHA256).HashedBytes;
 
-            var sha512Hashed1 = originalMessage1.UseHash().Sha512;
-            var sha512Hashed2 = originalMessage2.UseHash().Sha512;
+            var sha512Hashed1 = originalMessage1.UseHash(Algorithm.SHA512).HashedBytes;
+            var sha512Hashed2 = originalMessage2.UseHash(Algorithm.SHA512).HashedBytes;
 
             Console.WriteLine();
             Console.WriteLine("MD5 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(md5Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(md5Hashed2));
+            Console.WriteLine("Message 1 hash = " + md5Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + md5Hashed2.ToBase64String());
             Console.WriteLine();
             Console.WriteLine("SHA 1 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha1Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha1Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha1Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha1Hashed2.ToBase64String());
             Console.WriteLine();
 
             Console.WriteLine("SHA 256 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha256Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha256Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha256Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha256Hashed2.ToBase64String());
             Console.WriteLine();
             Console.WriteLine("SHA 512 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha512Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha512Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha512Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha512Hashed2.ToBase64String());
             Console.WriteLine();
             Console.ReadLine();
         }
 
         private static void UseHash()
         {
-            const string originalMessage1 = "Original Message to hash";
-            const string originalMessage2 = "Original Message2 to hash";
+            const string originalMessageString1 = "Original Message to hash";
+            const string originalMessageString2 = "Original Message2 to hash";
 
-            Console.WriteLine("Original Message 1 : " + originalMessage1);
-            Console.WriteLine("Original Message 2 : " + originalMessage2);
+            Console.WriteLine("Original Message 1 : " + originalMessageString1);
+            Console.WriteLine("Original Message 2 : " + originalMessageString2);
             Console.WriteLine();
 
-            var md5Hashed1 = Encoding.UTF8.GetBytes(originalMessage1).UseHash().Md5;
-            var md5Hashed2 = Encoding.UTF8.GetBytes(originalMessage2).UseHash().Md5;
+            var originalMessage1 = originalMessageString1.ToBytes();
+            var originalMessage2 = originalMessageString2.ToBytes();
 
-            var sha1Hashed1 = Encoding.UTF8.GetBytes(originalMessage1).UseHash().Sha1;
-            var sha1Hashed2 = Encoding.UTF8.GetBytes(originalMessage2).UseHash().Sha1;
+            var md5Hashed1 = originalMessage1.UseHash(Algorithm.MD5).HashedBytes;
+            var md5Hashed2 = originalMessage2.UseHash(Algorithm.MD5).HashedBytes;
 
-            var sha256Hashed1 = Encoding.UTF8.GetBytes(originalMessage1).UseHash().Sha256;
-            var sha256Hashed2 = Encoding.UTF8.GetBytes(originalMessage2).UseHash().Sha256;
+            var sha1Hashed1 = originalMessage1.UseHash(Algorithm.SHA1).HashedBytes;
+            var sha1Hashed2 = originalMessage2.UseHash(Algorithm.SHA1).HashedBytes;
 
-            var sha384Hashed1 = Encoding.UTF8.GetBytes(originalMessage1).UseHash().Sha384;
-            var sha384Hashed2 = Encoding.UTF8.GetBytes(originalMessage2).UseHash().Sha384;
+            var sha256Hashed1 = originalMessage1.UseHash(Algorithm.SHA256).HashedBytes;
+            var sha256Hashed2 = originalMessage2.UseHash(Algorithm.SHA256).HashedBytes;
 
-            var sha512Hashed1 = Encoding.UTF8.GetBytes(originalMessage1).UseHash().Sha512;
-            var sha512Hashed2 = Encoding.UTF8.GetBytes(originalMessage2).UseHash().Sha512;
+            var sha384Hashed1 = originalMessage1.UseHash(Algorithm.SHA384).HashedBytes;
+            var sha384Hashed2 = originalMessage2.UseHash(Algorithm.SHA384).HashedBytes;
+
+            var sha512Hashed1 = originalMessage1.UseHash(Algorithm.SHA512).HashedBytes;
+            var sha512Hashed2 = originalMessage2.UseHash(Algorithm.SHA512).HashedBytes;
 
             Console.WriteLine();
             Console.WriteLine("MD5 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(md5Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(md5Hashed2));
+            Console.WriteLine("Message 1 hash = " + md5Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + md5Hashed2.ToBase64String());
             Console.WriteLine();
             Console.WriteLine("SHA 1 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha1Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha1Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha1Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha1Hashed2.ToBase64String());
             Console.WriteLine();
 
             Console.WriteLine("SHA 256 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha256Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha256Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha256Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha256Hashed2.ToBase64String());
             Console.WriteLine();
             Console.WriteLine("SHA 384 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha384Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha384Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha384Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha384Hashed2.ToBase64String());
             Console.WriteLine();
             Console.WriteLine("SHA 512 Hashes");
             Console.WriteLine();
-            Console.WriteLine("Message 1 hash = " + Convert.ToBase64String(sha512Hashed1));
-            Console.WriteLine("Message 2 hash = " + Convert.ToBase64String(sha512Hashed2));
+            Console.WriteLine("Message 1 hash = " + sha512Hashed1.ToBase64String());
+            Console.WriteLine("Message 2 hash = " + sha512Hashed2.ToBase64String());
             Console.WriteLine();
             Console.ReadLine();
         }

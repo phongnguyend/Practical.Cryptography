@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Text;
 
-namespace CryptographyHelper.HashAlgorithm
+namespace CryptographyHelper.HashAlgorithms
 {
     /// <summary>
     /// password-based key derivation functionality
