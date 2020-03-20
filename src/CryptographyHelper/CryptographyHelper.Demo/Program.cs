@@ -1,5 +1,6 @@
 ﻿using CryptographyHelper.HashAlgorithms;
 using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CryptographyHelper.Demo
@@ -30,8 +31,19 @@ namespace CryptographyHelper.Demo
             var key = Convert.FromBase64String("e0x8U5MyotKHiY1uxqxurg==");
             var iv = Convert.FromBase64String("Z1kmtPGvz1g=");
 
-            var encrypted = original.ToBytes().UseTripleDES(key, iv).Encrypt();
-            var decrypted = encrypted.UseTripleDES(key, iv).Decrypt();
+            var encrypted = original
+                .UseTripleDES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Encrypt();
+
+            var decrypted = encrypted
+                .UseTripleDES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Decrypt();
 
             Console.WriteLine("Triple DES Encryption");
             Console.WriteLine();
@@ -48,8 +60,19 @@ namespace CryptographyHelper.Demo
             var key = Convert.FromBase64String("cmjP+yg9d3Q=");
             var iv = Convert.FromBase64String("bFWtV5H1BDc=");
 
-            var encrypted = original.ToBytes().UseDES(key, iv).Encrypt();
-            var decrypted = encrypted.UseDES(key, iv).Decrypt();
+            var encrypted = original
+                .UseDES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Encrypt();
+
+            var decrypted = encrypted
+                .UseDES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Decrypt();
 
             Console.WriteLine("DES Encryption");
             Console.WriteLine();
@@ -66,8 +89,19 @@ namespace CryptographyHelper.Demo
             var key = Convert.FromBase64String("MeNFuKVG63Ks7dChmDvA67lSN6eKDE1QVuZT1dGCYlI=");
             var iv = Convert.FromBase64String("bXhlXQwu0R9qMjbCfEo7GA==");
 
-            var encrypted = original.ToBytes().UseAES(key, iv).Encrypt();
-            var decrypted = encrypted.UseAES(key, iv).Decrypt();
+            var encrypted = original
+                .UseAES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Encrypt();
+
+            var decrypted = encrypted
+                .UseAES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Decrypt();
 
             Console.WriteLine("AES Encryption");
             Console.WriteLine();

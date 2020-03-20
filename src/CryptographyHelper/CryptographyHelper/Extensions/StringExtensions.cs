@@ -1,4 +1,6 @@
-﻿using CryptographyHelper.HashAlgorithms;
+﻿using CryptographyHelper.AsymmetricAlgorithms;
+using CryptographyHelper.HashAlgorithms;
+using CryptographyHelper.SymmetricAlgorithm;
 using System.IO;
 using System.Text;
 
@@ -29,6 +31,26 @@ namespace CryptographyHelper
         public static FileInfo ToFileInfo(this string filePath)
         {
             return new FileInfo(filePath);
+        }
+
+        public static DES UseDES(this string data, byte[] key)
+        {
+            return data.ToBytes().UseDES(key);
+        }
+
+        public static TripleDES UseTripleDES(this string data, byte[] key)
+        {
+            return data.ToBytes().UseTripleDES(key);
+        }
+
+        public static AES UseAES(this string data, byte[] key)
+        {
+            return data.ToBytes().UseAES(key);
+        }
+
+        public static RSA UseRSA(this string data, string publicKeyXml)
+        {
+            return data.ToBytes().UseRSA( publicKeyXml);
         }
     }
 }

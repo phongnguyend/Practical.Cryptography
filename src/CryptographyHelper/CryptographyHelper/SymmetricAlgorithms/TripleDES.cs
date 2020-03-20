@@ -5,30 +5,53 @@ namespace CryptographyHelper.SymmetricAlgorithm
 {
     public class TripleDES
     {
+        public static TripleDES Use(byte[] data, byte[] key)
+        {
+            return new TripleDES(data, key);
+        }
+
         private readonly byte[] _data;
         private readonly byte[] _key;
-        private readonly byte[] _iv;
+        CipherMode? _cipherMode;
+        PaddingMode? _paddingMode;
+        private byte[] _iv;
 
-        public TripleDES(byte[] data, byte[] key, byte[] iv)
+        private TripleDES(byte[] data, byte[] key)
         {
             _data = data;
             _key = key;
+        }
+
+        public TripleDES WithCipher(CipherMode cipherMode)
+        {
+            _cipherMode = cipherMode;
+            return this;
+        }
+
+        public TripleDES WithPadding(PaddingMode paddingMode)
+        {
+            _paddingMode = paddingMode;
+            return this;
+        }
+
+        public TripleDES WithIV(byte[] iv)
+        {
             _iv = iv;
+            return this;
         }
 
         public byte[] Encrypt()
         {
-            using (var des = new TripleDESCryptoServiceProvider())
+            using (var crypto = new TripleDESCryptoServiceProvider())
             {
-                des.Mode = CipherMode.CBC;
-                des.Padding = PaddingMode.PKCS7;
-
-                des.Key = _key;
-                des.IV = _iv;
+                crypto.Key = _key;
+                crypto.Mode = _cipherMode ?? crypto.Mode;
+                crypto.Padding = _paddingMode ?? crypto.Padding;
+                crypto.IV = _iv ?? crypto.IV;
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    var cryptoStream = new CryptoStream(memoryStream, des.CreateEncryptor(),
+                    var cryptoStream = new CryptoStream(memoryStream, crypto.CreateEncryptor(),
                         CryptoStreamMode.Write);
 
                     cryptoStream.Write(_data, 0, _data.Length);
@@ -41,17 +64,16 @@ namespace CryptographyHelper.SymmetricAlgorithm
 
         public byte[] Decrypt()
         {
-            using (var des = new TripleDESCryptoServiceProvider())
+            using (var crypto = new TripleDESCryptoServiceProvider())
             {
-                des.Mode = CipherMode.CBC;
-                des.Padding = PaddingMode.PKCS7;
-
-                des.Key = _key;
-                des.IV = _iv;
+                crypto.Key = _key;
+                crypto.Mode = _cipherMode ?? crypto.Mode;
+                crypto.Padding = _paddingMode ?? crypto.Padding;
+                crypto.IV = _iv ?? crypto.IV;
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    var cryptoStream = new CryptoStream(memoryStream, des.CreateDecryptor(),
+                    var cryptoStream = new CryptoStream(memoryStream, crypto.CreateDecryptor(),
                         CryptoStreamMode.Write);
 
                     cryptoStream.Write(_data, 0, _data.Length);

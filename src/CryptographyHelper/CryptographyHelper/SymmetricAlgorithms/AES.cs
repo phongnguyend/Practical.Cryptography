@@ -5,26 +5,60 @@ namespace CryptographyHelper.SymmetricAlgorithm
 {
     public class AES
     {
+        public static byte[] GenerateKey(int size = 128)
+        {
+            using (var crypto = new AesCryptoServiceProvider())
+            {
+                crypto.KeySize = size;
+                crypto.BlockSize = size;
+                crypto.GenerateKey();
+                return crypto.Key;
+            }
+        }
+
+        public static AES Use(byte[] data, byte[] key)
+        {
+            return new AES(data, key);
+        }
+
         private readonly byte[] _data;
         private readonly byte[] _key;
-        private readonly byte[] _iv;
+        CipherMode? _cipherMode;
+        PaddingMode? _paddingMode;
+        private byte[] _iv;
 
-        public AES(byte[] data, byte[] key, byte[] iv)
+        private AES(byte[] data, byte[] key)
         {
             _data = data;
             _key = key;
+        }
+
+        public AES WithCipher(CipherMode cipherMode)
+        {
+            _cipherMode = cipherMode;
+            return this;
+        }
+
+        public AES WithPadding(PaddingMode paddingMode)
+        {
+            _paddingMode = paddingMode;
+            return this;
+        }
+
+        public AES WithIV(byte[] iv)
+        {
             _iv = iv;
+            return this;
         }
 
         public byte[] Encrypt()
         {
             using (var aes = new AesCryptoServiceProvider())
             {
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-
                 aes.Key = _key;
-                aes.IV = _iv;
+                aes.Mode = _cipherMode ?? aes.Mode;
+                aes.Padding = _paddingMode ?? aes.Padding;
+                aes.IV = _iv ?? aes.IV;
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -43,11 +77,10 @@ namespace CryptographyHelper.SymmetricAlgorithm
         {
             using (var aes = new AesCryptoServiceProvider())
             {
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-
                 aes.Key = _key;
-                aes.IV = _iv;
+                aes.Mode = _cipherMode ?? aes.Mode;
+                aes.Padding = _paddingMode ?? aes.Padding;
+                aes.IV = _iv ?? aes.IV;
 
                 using (var memoryStream = new MemoryStream())
                 {

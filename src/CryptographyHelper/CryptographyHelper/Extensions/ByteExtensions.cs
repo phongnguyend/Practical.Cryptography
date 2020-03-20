@@ -1,4 +1,5 @@
-﻿using CryptographyHelper.HashAlgorithms;
+﻿using CryptographyHelper.AsymmetricAlgorithms;
+using CryptographyHelper.HashAlgorithms;
 using CryptographyHelper.SymmetricAlgorithm;
 using System;
 
@@ -21,9 +22,9 @@ namespace CryptographyHelper
             return BitConverter.ToString(data).Replace("-", string.Empty);
         }
 
-        public static string ToBase64String(this byte[] data)
+        public static string ToBase64String(this byte[] data, Base64FormattingOptions formattingOptions = Base64FormattingOptions.None)
         {
-            return Convert.ToBase64String(data);
+            return Convert.ToBase64String(data, formattingOptions);
         }
 
         public static Hash UseHash(this byte[] data, Algorithm algorithm)
@@ -41,19 +42,24 @@ namespace CryptographyHelper
             return new HMAC(data, key, algorithm);
         }
 
-        public static DES UseDES(this byte[] data, byte[] key, byte[] iv)
+        public static DES UseDES(this byte[] data, byte[] key)
         {
-            return new DES(data, key, iv);
+            return DES.Use(data, key);
         }
 
-        public static TripleDES UseTripleDES(this byte[] data, byte[] key, byte[] iv)
+        public static TripleDES UseTripleDES(this byte[] data, byte[] key)
         {
-            return new TripleDES(data, key, iv);
+            return TripleDES.Use(data, key);
         }
 
-        public static AES UseAES(this byte[] data, byte[] key, byte[] iv)
+        public static AES UseAES(this byte[] data, byte[] key)
         {
-            return new AES(data, key, iv);
+            return AES.Use(data, key);
+        }
+
+        public static RSA UseRSA(this byte[] data, string publicKeyXml)
+        {
+            return RSA.Use(data, publicKeyXml);
         }
     }
 }
