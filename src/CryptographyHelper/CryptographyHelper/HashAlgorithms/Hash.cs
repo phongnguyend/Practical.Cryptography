@@ -5,52 +5,26 @@ namespace CryptographyHelper.HashAlgorithms
 {
     public class Hash
     {
-        private byte[] _toBeHashed;
-        private Stream _streamToBeHashed;
-        private Algorithm _algorithm;
+        private readonly byte[] _bytesToBeHashed;
+        private readonly Stream _streamToBeHashed;
+        private readonly HashAlgorithm _algorithm;
 
-        public Hash(byte[] toBeHashed, Algorithm algorithm)
+        public Hash(byte[] bytesToBeHashed, Stream streamToBeHashed, HashAlgorithm algorithm)
         {
-            _toBeHashed = toBeHashed;
-            _algorithm = algorithm;
-        }
-
-        public Hash(Stream streamToBeHashed, Algorithm algorithm)
-        {
+            _bytesToBeHashed = bytesToBeHashed;
             _streamToBeHashed = streamToBeHashed;
             _algorithm = algorithm;
-        }
-
-        private HashAlgorithm GetHashAlgorithm()
-        {
-            switch (_algorithm)
-            {
-                case Algorithm.MD5:
-                    return MD5.Create();
-                case Algorithm.SHA1:
-                    return SHA1.Create();
-                case Algorithm.SHA256:
-                    return SHA256.Create();
-                case Algorithm.SHA384:
-                    return SHA384.Create();
-                case Algorithm.SHA512:
-                    return SHA512.Create();
-            }
-            return null;
         }
 
         public byte[] HashedBytes
         {
             get
             {
-                using (var hashAlgorithm = GetHashAlgorithm())
+                using (_algorithm)
                 {
-                    if (_streamToBeHashed != null)
-                    {
-                        return hashAlgorithm.ComputeHash(_streamToBeHashed);
-                    }
-
-                    return hashAlgorithm.ComputeHash(_toBeHashed);
+                    return _streamToBeHashed != null
+                        ? _algorithm.ComputeHash(_streamToBeHashed)
+                        : _algorithm.ComputeHash(_bytesToBeHashed);
                 }
             }
         }
