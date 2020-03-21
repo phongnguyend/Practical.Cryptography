@@ -4,6 +4,23 @@ namespace CryptographyHelper.AsymmetricAlgorithms
 {
     public class RSA
     {
+        public static string GenerateKey()
+        {
+            using (var crypto = new RSACryptoServiceProvider())
+            {
+                return crypto.ToXmlString2(true);
+            }
+        }
+
+        public static string ExportPublicKey(string keyXml)
+        {
+            using (var crypto = new RSACryptoServiceProvider())
+            {
+                crypto.FromXmlString2(keyXml);
+                return crypto.ToXmlString2(false);
+            }
+        }
+
         private string _keyXml;
         private byte[] _data;
 
@@ -22,7 +39,7 @@ namespace CryptographyHelper.AsymmetricAlgorithms
         {
             using (var crypto = new RSACryptoServiceProvider())
             {
-                crypto.FromXmlString(_keyXml);
+                crypto.FromXmlString2(_keyXml);
                 return crypto.Encrypt(_data, false);
             }
         }
@@ -31,7 +48,7 @@ namespace CryptographyHelper.AsymmetricAlgorithms
         {
             using (var crypto = new RSACryptoServiceProvider())
             {
-                crypto.FromXmlString(_keyXml);
+                crypto.FromXmlString2(_keyXml);
                 return crypto.Decrypt(_data, false);
             }
         }

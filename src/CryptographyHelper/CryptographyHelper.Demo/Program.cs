@@ -1,8 +1,8 @@
-﻿using CryptographyHelper.HashAlgorithms;
+﻿using CryptographyHelper.AsymmetricAlgorithms;
+using CryptographyHelper.HashAlgorithms;
 using CryptographyHelper.SymmetricAlgorithms;
 using System;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace CryptographyHelper.Demo
 {
@@ -17,6 +17,18 @@ namespace CryptographyHelper.Demo
             UseAES();
             UseDES();
             UseTripleDES();
+            UseRSA();
+        }
+
+        private static void UseRSA()
+        {
+            var secret = "supper secret text";
+            var rsaKey = AsymmetricAlgorithms.RSA.GenerateKey();
+            var rsaPublicKey = AsymmetricAlgorithms.RSA.ExportPublicKey(rsaKey);
+            var encryptedKey = secret.UseRSA(rsaPublicKey).Encrypt().ToBase64String();
+            var decryptedKey = encryptedKey.FromBase64String().UseRSA(rsaKey).Decrypt().GetString();
+
+            Console.ReadLine();
         }
 
         private static void CalculateFileChecksum()
@@ -28,8 +40,8 @@ namespace CryptographyHelper.Demo
         private static void UseTripleDES()
         {
             const string original = "Text to encrypt";
-            var key = Convert.FromBase64String("e0x8U5MyotKHiY1uxqxurg==");
-            var iv = Convert.FromBase64String("Z1kmtPGvz1g=");
+            var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
+            var iv ="Z1kmtPGvz1g=".FromBase64String();
 
             var encrypted = original
                 .UseTripleDES(key)
@@ -49,7 +61,7 @@ namespace CryptographyHelper.Demo
             Console.WriteLine();
             Console.WriteLine("Original Text = " + original);
             Console.WriteLine("Encrypted Text = " + encrypted.ToBase64String());
-            Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
+            Console.WriteLine("Decrypted Text = " + decrypted.GetString());
 
             Console.ReadLine();
         }
@@ -57,8 +69,8 @@ namespace CryptographyHelper.Demo
         private static void UseDES()
         {
             const string original = "Text to encrypt";
-            var key = Convert.FromBase64String("cmjP+yg9d3Q=");
-            var iv = Convert.FromBase64String("bFWtV5H1BDc=");
+            var key = "cmjP+yg9d3Q=".FromBase64String();
+            var iv = "bFWtV5H1BDc=".FromBase64String();
 
             var encrypted = original
                 .UseDES(key)
@@ -78,7 +90,7 @@ namespace CryptographyHelper.Demo
             Console.WriteLine();
             Console.WriteLine("Original Text = " + original);
             Console.WriteLine("Encrypted Text = " + encrypted.ToBase64String());
-            Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
+            Console.WriteLine("Decrypted Text = " + decrypted.GetString());
 
             Console.ReadLine();
         }
@@ -86,8 +98,8 @@ namespace CryptographyHelper.Demo
         private static void UseAES()
         {
             const string original = "Text to encrypt";
-            var key = Convert.FromBase64String("MeNFuKVG63Ks7dChmDvA67lSN6eKDE1QVuZT1dGCYlI=");
-            var iv = Convert.FromBase64String("bXhlXQwu0R9qMjbCfEo7GA==");
+            var key = "MeNFuKVG63Ks7dChmDvA67lSN6eKDE1QVuZT1dGCYlI=".FromBase64String();
+            var iv = "bXhlXQwu0R9qMjbCfEo7GA==".FromBase64String();
 
             var encrypted = original
                 .UseAES(key)
@@ -107,7 +119,7 @@ namespace CryptographyHelper.Demo
             Console.WriteLine();
             Console.WriteLine("Original Text = " + original);
             Console.WriteLine("Encrypted Text = " + encrypted.ToBase64String());
-            Console.WriteLine("Decrypted Text = " + Encoding.UTF8.GetString(decrypted));
+            Console.WriteLine("Decrypted Text = " + decrypted.GetString());
 
             Console.ReadLine();
         }
@@ -115,7 +127,7 @@ namespace CryptographyHelper.Demo
         private static void UsePBKDF2()
         {
             const string passwordToHash = "MyVeryComplexPassword";
-            var salt = Convert.FromBase64String("65QuFYgSxqIW0d9Y/QKRX9veWK0DOyX0g7+nbr9yux8=");
+            var salt = "65QuFYgSxqIW0d9Y/QKRX9veWK0DOyX0g7+nbr9yux8=".FromBase64String();
 
             var hashedPassword = passwordToHash.UsePBKDF2(salt, 500000).GetBytes(32);
 
@@ -128,26 +140,26 @@ namespace CryptographyHelper.Demo
         {
             const string originalMessage1 = "Original Message1 to hash";
             const string originalMessage2 = "Original Message2 to hash";
-            var key = "myscretekey".ToBytes();
+            var key = "myscretekey".GetBytes();
 
             Console.WriteLine("Original Message 1 : " + originalMessage1);
             Console.WriteLine("Original Message 2 : " + originalMessage2);
             Console.WriteLine();
 
-            var hmacMd5ByteData1 = originalMessage1.ToBytes().UseMd5(key).HashedBytes;
-            var hmacMd5ByteData2 = originalMessage2.ToBytes().UseMd5(key).HashedBytes;
+            var hmacMd5ByteData1 = originalMessage1.GetBytes().UseMd5(key).HashedBytes;
+            var hmacMd5ByteData2 = originalMessage2.GetBytes().UseMd5(key).HashedBytes;
 
-            var hmacSha1ByteData1 = originalMessage1.ToBytes().UseSha1(key).HashedBytes;
-            var hmacSha1ByteData2 = originalMessage2.ToBytes().UseSha1(key).HashedBytes;
+            var hmacSha1ByteData1 = originalMessage1.GetBytes().UseSha1(key).HashedBytes;
+            var hmacSha1ByteData2 = originalMessage2.GetBytes().UseSha1(key).HashedBytes;
 
-            var hmacSha256ByteData1 = originalMessage1.ToBytes().UseSha256(key).HashedBytes;
-            var hmacSha256ByteData2 = originalMessage2.ToBytes().UseSha256(key).HashedBytes;
+            var hmacSha256ByteData1 = originalMessage1.GetBytes().UseSha256(key).HashedBytes;
+            var hmacSha256ByteData2 = originalMessage2.GetBytes().UseSha256(key).HashedBytes;
 
-            var hmacSha384ByteData1 = originalMessage1.ToBytes().UseSha384(key).HashedBytes;
-            var hmacSha384ByteData2 = originalMessage2.ToBytes().UseSha384(key).HashedBytes;
+            var hmacSha384ByteData1 = originalMessage1.GetBytes().UseSha384(key).HashedBytes;
+            var hmacSha384ByteData2 = originalMessage2.GetBytes().UseSha384(key).HashedBytes;
 
-            var hmacSha512ByteData1 = originalMessage1.ToBytes().UseSha512(key).HashedBytes;
-            var hmacSha512ByteData2 = originalMessage2.ToBytes().UseSha512(key).HashedBytes;
+            var hmacSha512ByteData1 = originalMessage1.GetBytes().UseSha512(key).HashedBytes;
+            var hmacSha512ByteData2 = originalMessage2.GetBytes().UseSha512(key).HashedBytes;
 
             Console.WriteLine();
             Console.WriteLine("MD5 HMAC");
@@ -192,8 +204,8 @@ namespace CryptographyHelper.Demo
             Console.WriteLine("Original Message 2 : " + originalMessageString2);
             Console.WriteLine();
 
-            var originalMessage1 = originalMessageString1.ToBytes();
-            var originalMessage2 = originalMessageString2.ToBytes();
+            var originalMessage1 = originalMessageString1.GetBytes();
+            var originalMessage2 = originalMessageString2.GetBytes();
 
             var md5Hashed1 = originalMessage1.UseMd5().HashedBytes;
             var md5Hashed2 = originalMessage2.UseMd5().HashedBytes;

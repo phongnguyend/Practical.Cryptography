@@ -4,17 +4,17 @@
     {
         public static DES UseDES(this string data, byte[] key)
         {
-            return data.ToBytes().UseDES(key);
+            return data.GetBytes().UseDES(key);
         }
 
         public static TripleDES UseTripleDES(this string data, byte[] key)
         {
-            return data.ToBytes().UseTripleDES(key);
+            return data.GetBytes().UseTripleDES(key);
         }
 
         public static AES UseAES(this string data, byte[] key)
         {
-            return data.ToBytes().UseAES(key);
+            return data.GetBytes().UseAES(key);
         }
     }
 }

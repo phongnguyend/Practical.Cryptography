@@ -1,8 +1,7 @@
-﻿using CryptographyHelper.HashAlgorithms;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 
-namespace CryptographyHelper
+namespace CryptographyHelper.HashAlgorithms
 {
     public static class FileInfoExtensions
     {

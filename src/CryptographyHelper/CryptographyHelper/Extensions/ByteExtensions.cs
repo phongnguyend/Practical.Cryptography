@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace CryptographyHelper
 {
@@ -22,6 +23,11 @@ namespace CryptographyHelper
         public static string ToBase64String(this byte[] data, Base64FormattingOptions formattingOptions = Base64FormattingOptions.None)
         {
             return Convert.ToBase64String(data, formattingOptions);
+        }
+
+        public static string GetString(this byte[] data, Encoding encoding = null)
+        {
+            return (encoding ?? Encoding.UTF8).GetString(data);
         }
     }
 }
