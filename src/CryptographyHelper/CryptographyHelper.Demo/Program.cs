@@ -1,4 +1,5 @@
 ﻿using CryptographyHelper.HashAlgorithms;
+using CryptographyHelper.SymmetricAlgorithms;
 using System;
 using System.Security.Cryptography;
 using System.Text;
