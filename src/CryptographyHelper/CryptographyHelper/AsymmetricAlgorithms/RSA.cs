@@ -4,9 +4,9 @@ namespace CryptographyHelper.AsymmetricAlgorithms
 {
     public class RSA
     {
-        public static string GenerateKey()
+        public static string GenerateKey(int size = 1024)
         {
-            using (var crypto = new RSACryptoServiceProvider())
+            using (var crypto = new RSACryptoServiceProvider(size))
             {
                 return crypto.ToXmlString2(true);
             }
