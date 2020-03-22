@@ -17,4 +17,10 @@
     <ProjectReference Include="..\CryptographyHelper\CryptographyHelper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="AsymmetricAlgorithms\classifiedads.identityserver.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

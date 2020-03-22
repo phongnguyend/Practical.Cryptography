@@ -1,4 +1,5 @@
 ﻿using CryptographyHelper.AsymmetricAlgorithms;
+using System.Security.Cryptography.X509Certificates;
 using Xunit;
 
 namespace CryptographyHelper.Tests.AsymmetricAlgorithms
@@ -33,6 +34,24 @@ namespace CryptographyHelper.Tests.AsymmetricAlgorithms
 
             // Assert
             Assert.Equal("supper secret text", decrypted.GetString());
+        }
+
+        [Fact]
+        public void EncryptAndDecryptUsingCert()
+        {
+            // Arrange
+            var secret = "supper secret text";
+            var cert = new X509Certificate2("AsymmetricAlgorithms/classifiedads.identityserver.pfx", "password1234");
+
+            for (var i = 0; i < 10; i++)
+            {
+                // Act
+                var encrypted = secret.UseRSA(cert).Encrypt();
+                var decrypted = encrypted.UseRSA(cert).Decrypt();
+
+                // Assert
+                Assert.Equal("supper secret text", decrypted.GetString());
+            }
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CryptographyHelper.AsymmetricAlgorithms
 {
@@ -21,35 +22,53 @@ namespace CryptographyHelper.AsymmetricAlgorithms
             }
         }
 
+        X509Certificate2 _cert;
         private string _keyXml;
         private byte[] _data;
 
         public static RSA Use(byte[] data, string keyXml)
         {
-            return new RSA(data, keyXml);
+            return new RSA()
+            {
+                _data = data,
+                _keyXml = keyXml,
+            };
         }
 
-        private RSA(byte[] data, string keyXml)
+        public static RSA Use(byte[] data, X509Certificate2 cert)
         {
-            _data = data;
-            _keyXml = keyXml;
+            return new RSA()
+            {
+                _data = data,
+                _cert = cert
+            };
+        }
+
+        private RSA()
+        {
+
+        }
+
+        private RSACryptoServiceProvider GetCrypto()
+        {
+            var crypto = new RSACryptoServiceProvider();
+            crypto.FromXmlString2(_keyXml);
+            return crypto;
         }
 
         public byte[] Encrypt()
         {
-            using (var crypto = new RSACryptoServiceProvider())
+            using (var crypto = _cert != null ? _cert.GetRSAPublicKey() : GetCrypto())
             {
-                crypto.FromXmlString2(_keyXml);
-                return crypto.Encrypt(_data, false);
+                return crypto.Encrypt(_data, RSAEncryptionPadding.Pkcs1);
             }
         }
 
         public byte[] Decrypt()
         {
-            using (var crypto = new RSACryptoServiceProvider())
+            using (var crypto = _cert != null ? _cert.GetRSAPrivateKey() : GetCrypto())
             {
-                crypto.FromXmlString2(_keyXml);
-                return crypto.Decrypt(_data, false);
+                return crypto.Decrypt(_data, RSAEncryptionPadding.Pkcs1);
             }
         }
     }

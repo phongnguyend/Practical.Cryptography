@@ -14,6 +14,26 @@ namespace CryptographyHelper.AsymmetricAlgorithms
     {
         public static void FromXmlString2(this RSACryptoServiceProvider rsa, string xmlString)
         {
+            rsa.ImportParameters(xmlString.FromXmlString());
+        }
+
+        public static void FromXmlString2(this System.Security.Cryptography.RSA rsa, string xmlString)
+        {
+            rsa.ImportParameters(xmlString.FromXmlString());
+        }
+
+        public static string ToXmlString2(this RSACryptoServiceProvider rsa, bool includePrivateParameters)
+        {
+            return rsa.ExportParameters(includePrivateParameters).ToXmlString();
+        }
+
+        public static string ToXmlString2(this System.Security.Cryptography.RSA rsa, bool includePrivateParameters)
+        {
+            return rsa.ExportParameters(includePrivateParameters).ToXmlString();
+        }
+
+        private static RSAParameters FromXmlString(this string xmlString)
+        {
             RSAParameters parameters = new RSAParameters();
 
             XmlDocument xmlDoc = new XmlDocument();
@@ -40,13 +60,11 @@ namespace CryptographyHelper.AsymmetricAlgorithms
                 }
             }
 
-            rsa.ImportParameters(parameters);
+            return parameters;
         }
 
-        public static string ToXmlString2(this RSACryptoServiceProvider rsa, bool includePrivateParameters)
+        private static string ToXmlString(this RSAParameters parameters)
         {
-            RSAParameters parameters = rsa.ExportParameters(includePrivateParameters);
-
             var xml = string.Format("<RSAKeyValue><Modulus>{0}</Modulus><Exponent>{1}</Exponent><P>{2}</P><Q>{3}</Q><DP>{4}</DP><DQ>{5}</DQ><InverseQ>{6}</InverseQ><D>{7}</D></RSAKeyValue>",
                   parameters.Modulus.ToBase64String(),
                   parameters.Exponent.ToBase64String(),
@@ -61,7 +79,7 @@ namespace CryptographyHelper.AsymmetricAlgorithms
             doc.Descendants().Where(e => string.IsNullOrEmpty(e.Value)).Remove();
 
             return doc.ToString()
-                .Replace("\r",string.Empty)
+                .Replace("\r", string.Empty)
                 .Replace("\n", string.Empty)
                 .Replace(" ", string.Empty);
         }
