@@ -3,7 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace CryptographyHelper.AsymmetricAlgorithms
 {
-    public class RSA
+    public class RSACrypto
     {
         public static string GenerateKey(int size = 1024)
         {
@@ -26,27 +26,26 @@ namespace CryptographyHelper.AsymmetricAlgorithms
         private string _keyXml;
         private byte[] _data;
 
-        public static RSA Use(byte[] data, string keyXml)
+        public static RSACrypto Use(byte[] data, string keyXml)
         {
-            return new RSA()
+            return new RSACrypto()
             {
                 _data = data,
                 _keyXml = keyXml,
             };
         }
 
-        public static RSA Use(byte[] data, X509Certificate2 cert)
+        public static RSACrypto Use(byte[] data, X509Certificate2 cert)
         {
-            return new RSA()
+            return new RSACrypto()
             {
                 _data = data,
                 _cert = cert
             };
         }
 
-        private RSA()
+        private RSACrypto()
         {
-
         }
 
         private RSACryptoServiceProvider GetCrypto()
@@ -69,6 +68,38 @@ namespace CryptographyHelper.AsymmetricAlgorithms
             using (var crypto = _cert != null ? _cert.GetRSAPrivateKey() : GetCrypto())
             {
                 return crypto.Decrypt(_data, RSAEncryptionPadding.Pkcs1);
+            }
+        }
+
+        public byte[] SignHash(HashAlgorithmName hashAlgorithmName)
+        {
+            using (var crypto = _cert != null ? _cert.GetRSAPrivateKey() : GetCrypto())
+            {
+                return crypto.SignHash(_data, hashAlgorithmName, RSASignaturePadding.Pkcs1);
+            }
+        }
+
+        public bool VerifyHash(byte[] signature, HashAlgorithmName hashAlgorithmName)
+        {
+            using (var crypto = _cert != null ? _cert.GetRSAPublicKey() : GetCrypto())
+            {
+                return crypto.VerifyHash(_data, signature, hashAlgorithmName, RSASignaturePadding.Pkcs1);
+            }
+        }
+
+        public byte[] SignData(HashAlgorithmName hashAlgorithmName)
+        {
+            using (var crypto = _cert != null ? _cert.GetRSAPrivateKey() : GetCrypto())
+            {
+                return crypto.SignData(_data, hashAlgorithmName, RSASignaturePadding.Pkcs1);
+            }
+        }
+
+        public bool VerifyData(byte[] signature, HashAlgorithmName hashAlgorithmName)
+        {
+            using (var crypto = _cert != null ? _cert.GetRSAPublicKey() : GetCrypto())
+            {
+                return crypto.VerifyData(_data, signature, hashAlgorithmName, RSASignaturePadding.Pkcs1);
             }
         }
     }

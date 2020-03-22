@@ -2,17 +2,19 @@
 
 namespace CryptographyHelper.SymmetricAlgorithms
 {
-    public class DES : SymmetricBase
+    public class DES : SymmetricCrypto
     {
         public static DES Use(byte[] data, byte[] key)
         {
-            return new DES(data, key);
+            return new DES
+            {
+                _data = data,
+                _key = key,
+            };
         }
 
-        private DES(byte[] data, byte[] key)
+        private DES()
         {
-            _data = data;
-            _key = key;
         }
 
         protected override SymmetricAlgorithm GetSymmetricAlgorithm()

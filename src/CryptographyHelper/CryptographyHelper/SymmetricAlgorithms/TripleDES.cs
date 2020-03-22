@@ -2,17 +2,19 @@
 
 namespace CryptographyHelper.SymmetricAlgorithms
 {
-    public class TripleDES : SymmetricBase
+    public class TripleDES : SymmetricCrypto
     {
         public static TripleDES Use(byte[] data, byte[] key)
         {
-            return new TripleDES(data, key);
+            return new TripleDES
+            {
+                _data = data,
+                _key = key,
+            };
         }
 
-        private TripleDES(byte[] data, byte[] key)
+        private TripleDES()
         {
-            _data = data;
-            _key = key;
         }
 
         protected override SymmetricAlgorithm GetSymmetricAlgorithm()

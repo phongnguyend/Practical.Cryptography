@@ -3,27 +3,37 @@ using System.Security.Cryptography;
 
 namespace CryptographyHelper.SymmetricAlgorithms
 {
-    public abstract class SymmetricBase
+    public abstract class SymmetricCrypto
     {
+        public static byte[] GenerateKey(int length = 128)
+        {
+            using (RNGCryptoServiceProvider randomNumberGenerator = new RNGCryptoServiceProvider())
+            {
+                byte[] randomNumber = new byte[length];
+                randomNumberGenerator.GetBytes(randomNumber);
+                return randomNumber;
+            }
+        }
+
         protected byte[] _data;
         protected byte[] _key;
         protected CipherMode? _cipherMode;
         protected PaddingMode? _paddingMode;
         protected byte[] _iv;
 
-        public SymmetricBase WithCipher(CipherMode cipherMode)
+        public SymmetricCrypto WithCipher(CipherMode cipherMode)
         {
             _cipherMode = cipherMode;
             return this;
         }
 
-        public SymmetricBase WithPadding(PaddingMode paddingMode)
+        public SymmetricCrypto WithPadding(PaddingMode paddingMode)
         {
             _paddingMode = paddingMode;
             return this;
         }
 
-        public SymmetricBase WithIV(byte[] iv)
+        public SymmetricCrypto WithIV(byte[] iv)
         {
             _iv = iv;
             return this;

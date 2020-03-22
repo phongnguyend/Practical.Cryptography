@@ -2,28 +2,19 @@
 
 namespace CryptographyHelper.SymmetricAlgorithms
 {
-    public class AES: SymmetricBase
+    public class AES : SymmetricCrypto
     {
-        public static byte[] GenerateKey(int size = 128)
-        {
-            using (var crypto = new AesCryptoServiceProvider())
-            {
-                crypto.KeySize = size;
-                crypto.BlockSize = size;
-                crypto.GenerateKey();
-                return crypto.Key;
-            }
-        }
-
         public static AES Use(byte[] data, byte[] key)
         {
-            return new AES(data, key);
+            return new AES
+            {
+                _data = data,
+                _key = key,
+            };
         }
 
-        private AES(byte[] data, byte[] key)
+        private AES()
         {
-            _data = data;
-            _key = key;
         }
 
         protected override SymmetricAlgorithm GetSymmetricAlgorithm()
