@@ -7,8 +7,8 @@ namespace CryptographyHelper.Certificates
     {
         public static X509Certificate2 Find(string thumbprint)
         {
-            return Find(StoreName.My, StoreLocation.LocalMachine, thumbprint)
-                ?? Find(StoreName.My, StoreLocation.CurrentUser, thumbprint);
+            return Find(StoreName.My, StoreLocation.CurrentUser, thumbprint)
+                ?? Find(StoreName.My, StoreLocation.LocalMachine, thumbprint);
         }
 
         public static X509Certificate2 Find(StoreName storeName, StoreLocation storeLocation, string thumbprint)
