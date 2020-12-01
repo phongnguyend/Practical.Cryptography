@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO;
+using System.Security.Cryptography;
 
 namespace CryptographyHelper.SymmetricAlgorithms
 {
@@ -8,7 +9,16 @@ namespace CryptographyHelper.SymmetricAlgorithms
         {
             return new AES
             {
-                _data = data,
+                _bytes = data,
+                _key = key,
+            };
+        }
+
+        public static AES Use(Stream data, byte[] key)
+        {
+            return new AES
+            {
+                _stream = data,
                 _key = key,
             };
         }

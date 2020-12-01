@@ -15,7 +15,8 @@ namespace CryptographyHelper.SymmetricAlgorithms
             }
         }
 
-        protected byte[] _data;
+        protected byte[] _bytes;
+        protected Stream _stream;
         protected byte[] _key;
         protected CipherMode? _cipherMode;
         protected PaddingMode? _paddingMode;
@@ -41,7 +42,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
 
         protected abstract SymmetricAlgorithm GetSymmetricAlgorithm();
 
-        public byte[] Encrypt()
+        private void Encrypt(Stream intput, Stream output)
         {
             using (var crypto = GetSymmetricAlgorithm())
             {
@@ -50,39 +51,107 @@ namespace CryptographyHelper.SymmetricAlgorithms
                 crypto.Padding = _paddingMode ?? crypto.Padding;
                 crypto.IV = _iv ?? crypto.IV;
 
-                using (var memoryStream = new MemoryStream())
+                using (var cryptoStream = new CryptoStream(output, crypto.CreateEncryptor(), CryptoStreamMode.Write))
                 {
-                    var cryptoStream = new CryptoStream(memoryStream, crypto.CreateEncryptor(),
-                        CryptoStreamMode.Write);
+                    int count = 0;
+                    int offset = 0;
 
-                    cryptoStream.Write(_data, 0, _data.Length);
+                    int blockSizeBytes = crypto.BlockSize / 8;
+                    byte[] data = new byte[blockSizeBytes];
+                    int bytesRead = 0;
+
+                    do
+                    {
+                        count = intput.Read(data, 0, blockSizeBytes);
+                        offset += count;
+                        cryptoStream.Write(data, 0, count);
+                        bytesRead += blockSizeBytes;
+                    }
+                    while (count > 0);
+
                     cryptoStream.FlushFinalBlock();
-
-                    return memoryStream.ToArray();
+                    cryptoStream.Close();
                 }
+            }
+        }
+
+        private void Decrypt(Stream intput, Stream output)
+        {
+            using (var crypto = GetSymmetricAlgorithm())
+            {
+                crypto.Key = _key;
+                crypto.Mode = _cipherMode ?? crypto.Mode;
+                crypto.Padding = _paddingMode ?? crypto.Padding;
+                crypto.IV = _iv ?? crypto.IV;
+
+                using (var cryptoStream = new CryptoStream(output, crypto.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    int count = 0;
+                    int offset = 0;
+
+                    int blockSizeBytes = crypto.BlockSize / 8;
+                    byte[] data = new byte[blockSizeBytes];
+                    int bytesRead = 0;
+
+                    do
+                    {
+                        count = intput.Read(data, 0, blockSizeBytes);
+                        offset += count;
+                        cryptoStream.Write(data, 0, count);
+                        bytesRead += blockSizeBytes;
+                    }
+                    while (count > 0);
+
+                    cryptoStream.FlushFinalBlock();
+                    cryptoStream.Close();
+                }
+            }
+        }
+
+        public byte[] Encrypt()
+        {
+            using (var output = new MemoryStream())
+            {
+                Encrypt(output);
+                return output.ToArray();
             }
         }
 
         public byte[] Decrypt()
         {
-            using (var crypto = GetSymmetricAlgorithm())
+            using (var output = new MemoryStream())
             {
-                crypto.Key = _key;
-                crypto.Mode = _cipherMode ?? crypto.Mode;
-                crypto.Padding = _paddingMode ?? crypto.Padding;
-                crypto.IV = _iv ?? crypto.IV;
+                Decrypt(output);
+                return output.ToArray();
+            }
+        }
 
-                using (var memoryStream = new MemoryStream())
+        public void Encrypt(Stream output)
+        {
+            if (_stream != null)
+            {
+                Encrypt(_stream, output);
+            }
+            else
+            {
+                using (var stream = _bytes.ToStream())
                 {
-                    var cryptoStream = new CryptoStream(memoryStream, crypto.CreateDecryptor(),
-                        CryptoStreamMode.Write);
+                    Encrypt(stream, output);
+                }
+            }
+        }
 
-                    cryptoStream.Write(_data, 0, _data.Length);
-                    cryptoStream.FlushFinalBlock();
-
-                    var decryptBytes = memoryStream.ToArray();
-
-                    return decryptBytes;
+        public void Decrypt(Stream output)
+        {
+            if (_stream != null)
+            {
+                Decrypt(_stream, output);
+            }
+            else
+            {
+                using (var stream = _bytes.ToStream())
+                {
+                    Decrypt(stream, output);
                 }
             }
         }

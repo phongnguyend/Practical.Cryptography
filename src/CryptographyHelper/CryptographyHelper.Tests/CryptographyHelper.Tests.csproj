@@ -21,6 +21,9 @@
     <None Update="AsymmetricAlgorithms\classifiedads.identityserver.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="SymmetricAlgorithms\File.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

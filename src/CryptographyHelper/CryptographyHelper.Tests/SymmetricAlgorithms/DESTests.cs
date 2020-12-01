@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO;
+using System.Security.Cryptography;
+using CryptographyHelper.HashAlgorithms;
 using CryptographyHelper.SymmetricAlgorithms;
 using Xunit;
 
@@ -36,14 +38,54 @@ namespace CryptographyHelper.Tests.SymmetricAlgorithms
 
             // Act
             var decrypted = encrypted
-               .UseDES(key)
-               .WithCipher(CipherMode.ECB)
-               .WithPadding(PaddingMode.PKCS7)
-               .WithIV(iv)
-               .Decrypt();
+                .UseDES(key)
+                .WithCipher(CipherMode.ECB)
+                .WithPadding(PaddingMode.PKCS7)
+                .WithIV(iv)
+                .Decrypt();
 
             // Assert
             Assert.Equal("Text to encrypt", decrypted.GetString());
+        }
+
+        [Fact]
+        public void EncryptDecryptFile()
+        {
+            // Arrange
+            const string originalFileName = "SymmetricAlgorithms/File.xlsx";
+            const string encryptedFileName = "SymmetricAlgorithms/EncryptedDES.xlsx";
+            const string decryptedFileName = "SymmetricAlgorithms/DecryptedDES.xlsx";
+            var key = "cmjP+yg9d3Q=".FromBase64String();
+            var iv = "bFWtV5H1BDc=".FromBase64String();
+
+            // Act
+            using var inputStream = File.OpenRead(originalFileName);
+            using var outputStream = File.OpenWrite(encryptedFileName);
+            {
+                inputStream
+                    .UseDES(key)
+                    .WithCipher(CipherMode.ECB)
+                    .WithPadding(PaddingMode.PKCS7)
+                    .WithIV(iv)
+                    .Encrypt(outputStream);
+            }
+
+            using var inputStream2 = File.OpenRead(encryptedFileName);
+            using var outputStream2 = File.OpenWrite(decryptedFileName);
+            {
+                inputStream2
+                    .UseDES(key)
+                    .WithCipher(CipherMode.ECB)
+                    .WithPadding(PaddingMode.PKCS7)
+                    .WithIV(iv)
+                    .Decrypt(outputStream2);
+            }
+
+            var hashed1 = originalFileName.ToFileInfo().UseMd5().HashedString;
+            var hashed2 = decryptedFileName.ToFileInfo().UseMd5().HashedString;
+
+            // Assert
+            Assert.Equal(hashed1, hashed2);
         }
     }
 }

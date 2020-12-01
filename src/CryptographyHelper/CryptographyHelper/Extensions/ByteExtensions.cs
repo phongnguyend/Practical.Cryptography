@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 namespace CryptographyHelper
@@ -28,6 +29,11 @@ namespace CryptographyHelper
         public static string GetString(this byte[] data, Encoding encoding = null)
         {
             return (encoding ?? Encoding.UTF8).GetString(data);
+        }
+
+        public static MemoryStream ToStream(this byte[] data)
+        {
+            return new MemoryStream(data);
         }
     }
 }
