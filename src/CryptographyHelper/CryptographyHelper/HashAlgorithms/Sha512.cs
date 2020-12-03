@@ -10,6 +10,11 @@ namespace CryptographyHelper.HashAlgorithms
         {
         }
 
+        public Sha512(FileInfo fileToBeHashed) 
+            : base(fileToBeHashed)
+        {
+        }
+
         protected override HashAlgorithm GetHashAlgorithm()
         {
             return _key == null ? SHA512.Create() : (HashAlgorithm)new HMACSHA512(_key);

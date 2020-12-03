@@ -10,6 +10,11 @@ namespace CryptographyHelper.HashAlgorithms
         {
         }
 
+        public Sha384(FileInfo fileToBeHashed) 
+            : base(fileToBeHashed)
+        {
+        }
+
         protected override HashAlgorithm GetHashAlgorithm()
         {
             return _key == null ? SHA384.Create() : (HashAlgorithm)new HMACSHA384(_key);
