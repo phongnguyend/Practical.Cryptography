@@ -81,8 +81,8 @@ namespace CryptographyHelper.Tests.SymmetricAlgorithms
                     .Decrypt(outputStream2);
             }
 
-            var hashed1 = originalFileName.ToFileInfo().UseMd5().HashedString;
-            var hashed2 = decryptedFileName.ToFileInfo().UseMd5().HashedString;
+            var hashed1 = originalFileName.ToFileInfo().UseMd5().ComputeHashedString();
+            var hashed2 = decryptedFileName.ToFileInfo().UseMd5().ComputeHashedString();
 
             // Assert
             Assert.Equal(hashed1, hashed2);

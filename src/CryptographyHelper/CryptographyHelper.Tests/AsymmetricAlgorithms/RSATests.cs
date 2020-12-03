@@ -76,7 +76,7 @@ namespace CryptographyHelper.Tests.AsymmetricAlgorithms
         public void SignAndVerifyHash()
         {
             // Arrange
-            var secret = "supper secret text".UseSha256().HashedBytes;
+            var secret = "supper secret text".UseSha256().ComputeHash();
             var rsaPrivateKey = RSACrypto.GenerateKey();
             var rsaPublicKey = RSACrypto.ExportPublicKey(rsaPrivateKey);
 
@@ -92,7 +92,7 @@ namespace CryptographyHelper.Tests.AsymmetricAlgorithms
         public void SignAndVerifyHashUsingCert()
         {
             // Arrange
-            var secret = "supper secret text".UseSha256().HashedBytes;
+            var secret = "supper secret text".UseSha256().ComputeHash();
             var cert = new X509Certificate2("AsymmetricAlgorithms/classifiedads.identityserver.pfx", "password1234");
             
             // Act

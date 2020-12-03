@@ -9,7 +9,7 @@ namespace CryptographyHelper.Tests.HashAlgorithms
         public void Md5Tests()
         {
             string file = @"../../../CryptographyHelper.Tests.csproj";
-            string md5 = file.ToFileInfo().UseMd5().HashedString;
+            string md5 = file.ToFileInfo().UseMd5().ComputeHashedString();
         }
     }
 }

@@ -3,38 +3,40 @@ using System.Security.Cryptography;
 
 namespace CryptographyHelper.HashAlgorithms
 {
-    public class Hash
+    public abstract class Hash
     {
         private readonly byte[] _bytesToBeHashed;
         private readonly Stream _streamToBeHashed;
-        private readonly HashAlgorithm _algorithm;
+        protected byte[] _key;
 
-        public Hash(byte[] bytesToBeHashed, Stream streamToBeHashed, HashAlgorithm algorithm)
+        public Hash(byte[] bytesToBeHashed, Stream streamToBeHashed)
         {
             _bytesToBeHashed = bytesToBeHashed;
             _streamToBeHashed = streamToBeHashed;
-            _algorithm = algorithm;
         }
 
-        public byte[] HashedBytes
+        public Hash WithKey(byte[] key)
         {
-            get
+            _key = key;
+            return this;
+        }
+
+        protected abstract HashAlgorithm GetHashAlgorithm();
+
+        public byte[] ComputeHash()
+        {
+            using (var algorithm = GetHashAlgorithm())
             {
-                using (_algorithm)
-                {
-                    return _streamToBeHashed != null
-                        ? _algorithm.ComputeHash(_streamToBeHashed)
-                        : _algorithm.ComputeHash(_bytesToBeHashed);
-                }
+                return _streamToBeHashed != null
+                    ? algorithm.ComputeHash(_streamToBeHashed)
+                    : algorithm.ComputeHash(_bytesToBeHashed);
             }
         }
 
-        public string HashedString
+        public string ComputeHashedString()
         {
-            get
-            {
-                return HashedBytes.ToHashedString();
-            }
+            return ComputeHash().ToHashedString();
         }
     }
 }
+

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Security.Cryptography;
 
 namespace CryptographyHelper.HashAlgorithms
 {
@@ -7,7 +6,7 @@ namespace CryptographyHelper.HashAlgorithms
     {
         public static Hash UseMd5(this FileInfo file)
         {
-            return new Hash(null, File.OpenRead(file.FullName), MD5.Create());
+            return new Md5(null, File.OpenRead(file.FullName));
         }
     }
 }

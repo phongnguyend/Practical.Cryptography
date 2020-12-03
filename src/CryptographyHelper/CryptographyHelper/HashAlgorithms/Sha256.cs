@@ -1,0 +1,18 @@
+﻿using System.IO;
+using System.Security.Cryptography;
+
+namespace CryptographyHelper.HashAlgorithms
+{
+    public class Sha256 : Hash
+    {
+        public Sha256(byte[] bytesToBeHashed, Stream streamToBeHashed)
+            : base(bytesToBeHashed, streamToBeHashed)
+        {
+        }
+
+        protected override HashAlgorithm GetHashAlgorithm()
+        {
+            return _key == null ? SHA256.Create() : (HashAlgorithm)new HMACSHA256(_key);
+        }
+    }
+}

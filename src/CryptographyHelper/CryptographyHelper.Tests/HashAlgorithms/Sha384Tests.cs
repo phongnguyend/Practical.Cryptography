@@ -12,7 +12,7 @@ namespace CryptographyHelper.Tests.HashAlgorithms
             const string originalMessage = "Original Message to hash";
 
             // Act
-            var hashed = originalMessage.UseSha384().HashedBytes.ToHashedString();
+            var hashed = originalMessage.UseSha384().ComputeHash().ToHashedString();
 
             // Assert
             Assert.Equal("F6CAF4688471120BFF98F0F53D9F5A403C9991F9F196F93713C4D6262A6787F890DFB300807354A199715E1CA4A43EA5", hashed);
@@ -25,7 +25,7 @@ namespace CryptographyHelper.Tests.HashAlgorithms
             byte[] originalMessage = "Original Message to hash".GetBytes();
 
             // Act
-            var hashed = originalMessage.UseSha384().HashedBytes.ToHashedString();
+            var hashed = originalMessage.UseSha384().ComputeHash().ToHashedString();
 
             // Assert
             Assert.Equal("F6CAF4688471120BFF98F0F53D9F5A403C9991F9F196F93713C4D6262A6787F890DFB300807354A199715E1CA4A43EA5", hashed);
@@ -39,7 +39,7 @@ namespace CryptographyHelper.Tests.HashAlgorithms
             var key = "myscretekey".GetBytes();
 
             // Act
-            var hashed = originalMessage.UseSha384(key).HashedBytes.ToHashedString();
+            var hashed = originalMessage.UseSha384().WithKey(key).ComputeHash().ToHashedString();
 
             // Assert
             Assert.Equal("0803D90E53B514DC34B8EFD4D7076E75C11B164120895697E5EA5C1DE0E12BEAB4FC5C85548D6D12FF8E9FD648121F1E", hashed);
@@ -53,7 +53,7 @@ namespace CryptographyHelper.Tests.HashAlgorithms
             var key = "myscretekey".GetBytes();
 
             // Act
-            var hashed = originalMessage.UseSha384(key).HashedBytes.ToHashedString();
+            var hashed = originalMessage.UseSha384().WithKey(key).ComputeHash().ToHashedString();
 
             // Assert
             Assert.Equal("0803D90E53B514DC34B8EFD4D7076E75C11B164120895697E5EA5C1DE0E12BEAB4FC5C85548D6D12FF8E9FD648121F1E", hashed);

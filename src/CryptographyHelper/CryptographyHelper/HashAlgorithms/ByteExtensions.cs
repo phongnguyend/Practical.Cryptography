@@ -1,32 +1,30 @@
-﻿using System.Security.Cryptography;
-
-namespace CryptographyHelper.HashAlgorithms
+﻿namespace CryptographyHelper.HashAlgorithms
 {
     public static class ByteExtensions
     {
-        public static Hash UseMd5(this byte[] data, byte[] key = null)
+        public static Hash UseMd5(this byte[] data)
         {
-            return new Hash(data, null, key == null ? MD5.Create() : (HashAlgorithm)new HMACMD5(key));
+            return new Md5(data, null);
         }
 
-        public static Hash UseSha1(this byte[] data, byte[] key = null)
+        public static Hash UseSha1(this byte[] data)
         {
-            return new Hash(data, null, key == null ? SHA1.Create() : (HashAlgorithm)new HMACSHA1(key));
+            return new Sha1(data, null);
         }
 
-        public static Hash UseSha256(this byte[] data, byte[] key = null)
+        public static Hash UseSha256(this byte[] data)
         {
-            return new Hash(data, null, key == null ? SHA256.Create() : (HashAlgorithm)new HMACSHA256(key));
+            return new Sha256(data, null);
         }
 
-        public static Hash UseSha384(this byte[] data, byte[] key = null)
+        public static Hash UseSha384(this byte[] data)
         {
-            return new Hash(data, null, key == null ? SHA384.Create() : (HashAlgorithm)new HMACSHA384(key));
+            return new Sha384(data, null);
         }
 
-        public static Hash UseSha512(this byte[] data, byte[] key = null)
+        public static Hash UseSha512(this byte[] data)
         {
-            return new Hash(data, null, key == null ? SHA512.Create() : (HashAlgorithm)new HMACSHA512(key));
+            return new Sha512(data, null);
         }
 
         public static PBKDF2 UsePBKDF2(this byte[] password, byte[] salt, int iterations)
