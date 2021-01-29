@@ -1,4 +1,5 @@
 ﻿using CryptographyHelper.AsymmetricAlgorithms;
+using CryptographyHelper.Certificates;
 using CryptographyHelper.HashAlgorithms;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -43,7 +44,7 @@ namespace CryptographyHelper.Tests.AsymmetricAlgorithms
         {
             // Arrange
             var secret = "supper secret text";
-            var cert = new X509Certificate2("AsymmetricAlgorithms/classifiedads.identityserver.pfx", "password1234");
+            var cert = CertificateFile.Find("AsymmetricAlgorithms/classifiedads.identityserver.pfx", "password1234");
 
             for (var i = 0; i < 10; i++)
             {
@@ -94,7 +95,7 @@ namespace CryptographyHelper.Tests.AsymmetricAlgorithms
             // Arrange
             var secret = "supper secret text".UseSha256().ComputeHash();
             var cert = new X509Certificate2("AsymmetricAlgorithms/classifiedads.identityserver.pfx", "password1234");
-            
+
             // Act
             var signature = secret.UseRSA(cert).SignHash(HashAlgorithmName.SHA256);
             var verified = secret.UseRSA(cert).VerifyHash(signature, HashAlgorithmName.SHA256);
