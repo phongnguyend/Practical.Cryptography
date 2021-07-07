@@ -1,3 +1,6 @@
+### Nuget
+https://www.nuget.org/packages/CryptographyHelper
+
 ### Cryptography Object Inheritance In .Net
 
 **Hash Algorithms:**
