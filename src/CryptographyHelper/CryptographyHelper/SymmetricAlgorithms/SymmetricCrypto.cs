@@ -42,7 +42,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
 
         protected abstract SymmetricAlgorithm GetSymmetricAlgorithm();
 
-        private void Encrypt(Stream intput, Stream output)
+        private void Encrypt(Stream input, Stream output, bool leaveOpen)
         {
             using (var crypto = GetSymmetricAlgorithm())
             {
@@ -51,7 +51,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
                 crypto.Padding = _paddingMode ?? crypto.Padding;
                 crypto.IV = _iv ?? crypto.IV;
 
-                using (var cryptoStream = new CryptoStream(output, crypto.CreateEncryptor(), CryptoStreamMode.Write))
+                using (var cryptoStream = new CryptoStream(output, crypto.CreateEncryptor(), CryptoStreamMode.Write, leaveOpen))
                 {
                     int count = 0;
                     int offset = 0;
@@ -62,7 +62,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
 
                     do
                     {
-                        count = intput.Read(data, 0, blockSizeBytes);
+                        count = input.Read(data, 0, blockSizeBytes);
                         offset += count;
                         cryptoStream.Write(data, 0, count);
                         bytesRead += blockSizeBytes;
@@ -75,7 +75,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
             }
         }
 
-        private void Decrypt(Stream intput, Stream output)
+        private void Decrypt(Stream input, Stream output, bool leaveOpen)
         {
             using (var crypto = GetSymmetricAlgorithm())
             {
@@ -84,7 +84,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
                 crypto.Padding = _paddingMode ?? crypto.Padding;
                 crypto.IV = _iv ?? crypto.IV;
 
-                using (var cryptoStream = new CryptoStream(output, crypto.CreateDecryptor(), CryptoStreamMode.Write))
+                using (var cryptoStream = new CryptoStream(output, crypto.CreateDecryptor(), CryptoStreamMode.Write, leaveOpen))
                 {
                     int count = 0;
                     int offset = 0;
@@ -95,7 +95,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
 
                     do
                     {
-                        count = intput.Read(data, 0, blockSizeBytes);
+                        count = input.Read(data, 0, blockSizeBytes);
                         offset += count;
                         cryptoStream.Write(data, 0, count);
                         bytesRead += blockSizeBytes;
@@ -126,32 +126,32 @@ namespace CryptographyHelper.SymmetricAlgorithms
             }
         }
 
-        public void Encrypt(Stream output)
+        public void Encrypt(Stream output, bool leaveOpen = false)
         {
             if (_stream != null)
             {
-                Encrypt(_stream, output);
+                Encrypt(_stream, output, leaveOpen);
             }
             else
             {
                 using (var stream = _bytes.ToStream())
                 {
-                    Encrypt(stream, output);
+                    Encrypt(stream, output, leaveOpen);
                 }
             }
         }
 
-        public void Decrypt(Stream output)
+        public void Decrypt(Stream output, bool leaveOpen = false)
         {
             if (_stream != null)
             {
-                Decrypt(_stream, output);
+                Decrypt(_stream, output, leaveOpen);
             }
             else
             {
                 using (var stream = _bytes.ToStream())
                 {
-                    Decrypt(stream, output);
+                    Decrypt(stream, output, leaveOpen);
                 }
             }
         }
