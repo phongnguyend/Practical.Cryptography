@@ -1,3 +1,4 @@
+### Key
 - [Keylength - NIST Report on Cryptographic Key Length and Cryptoperiod (2020)](https://www.keylength.com/en/4/)
 - [Key size - Wikipedia](https://en.m.wikipedia.org/wiki/Key_size)
 - [The Definitive 2019 Guide to Cryptographic Key Sizes and Algorithm Recommendations](https://paragonie.com/blog/2019/03/definitive-2019-guide-cryptographic-key-sizes-and-algorithm-recommendations)
@@ -15,3 +16,8 @@
 - [Recommendation for Key Management: Part 1 - General](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)
 - [recommended key length for aes - Google Search](https://www.google.com/search?q=recommended+key+length+for+aes)
 - [aes key length performance - Google Search](https://www.google.com/search?q=aes+key+length+performance)
+
+### Cipher Mode
+- [CA5358: Do Not Use Unsafe Cipher Modes (code analysis) - .NET | Microsoft Docs](https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca5358)
+- [AesCryptoServiceProvider.Mode Property (System.Security.Cryptography) | Microsoft Docs](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.aescryptoserviceprovider.mode?view=net-5.0)
+- [CipherMode Enum (System.Security.Cryptography) | Microsoft Docs](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.ciphermode?view=net-5.0)
