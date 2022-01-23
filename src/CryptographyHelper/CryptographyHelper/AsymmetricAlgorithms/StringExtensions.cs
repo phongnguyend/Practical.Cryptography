@@ -9,6 +9,11 @@ namespace CryptographyHelper.AsymmetricAlgorithms
             return data.GetBytes().UseRSA(keyXml);
         }
 
+        public static RSACrypto UseRSA(this string data, string key, KeyFormat format)
+        {
+            return data.GetBytes().UseRSA(key, format);
+        }
+
         public static RSACrypto UseRSA(this string data, X509Certificate2 cert)
         {
             return data.GetBytes().UseRSA(cert);
