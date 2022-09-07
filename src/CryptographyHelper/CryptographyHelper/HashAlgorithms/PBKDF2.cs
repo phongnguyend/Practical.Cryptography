@@ -25,12 +25,15 @@ namespace CryptographyHelper.HashAlgorithms
             _getRfc2898 = () => new Rfc2898DeriveBytes(password, salt, iterations);
         }
 
-        public byte[] GetBytes(int leng)
+        public PBKDF2(byte[] password, byte[] salt, int iterations, HashAlgorithmName hashAlgorithm)
         {
-            using (var rfc2898 = _getRfc2898())
-            {
-                return rfc2898.GetBytes(leng);
-            }
+            _getRfc2898 = () => new Rfc2898DeriveBytes(password, salt, iterations, hashAlgorithm);
+        }
+
+        public byte[] GetBytes(int length)
+        {
+            using var rfc2898 = _getRfc2898();
+            return rfc2898.GetBytes(length);
         }
     }
 }
