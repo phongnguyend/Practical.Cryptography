@@ -26,10 +26,5 @@
         {
             return new Sha512(data, null);
         }
-
-        public static PBKDF2 UsePBKDF2(this byte[] password, byte[] salt, int iterations)
-        {
-            return new PBKDF2(password, salt, iterations);
-        }
     }
 }
