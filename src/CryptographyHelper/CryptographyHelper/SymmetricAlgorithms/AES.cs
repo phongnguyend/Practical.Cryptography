@@ -29,7 +29,50 @@ namespace CryptographyHelper.SymmetricAlgorithms
 
         protected override SymmetricAlgorithm GetSymmetricAlgorithm()
         {
-            return new AesCryptoServiceProvider();
+            return Aes.Create();
+        }
+
+
+        public (byte[], byte[]) EncryptCcm(byte[] nonce, byte[] asociatedData)
+        {
+            var tag = new byte[16];
+            var cipherText = new byte[_bytes.Length];
+
+            using var aesGcm = new AesCcm(_key);
+            aesGcm.Encrypt(nonce, _bytes, cipherText, tag, asociatedData);
+
+            return (cipherText, tag);
+        }
+
+        public byte[] DecryptCcm(byte[] nonce, byte[] asociatedData, byte[] tag)
+        {
+            var decryptedData = new byte[_bytes.Length];
+
+            using var aesGcm = new AesCcm(_key);
+            aesGcm.Decrypt(nonce, _bytes, decryptedData, tag, asociatedData);
+
+            return decryptedData;
+        }
+
+        public (byte[], byte[]) EncryptGcm(byte[] nonce, byte[] asociatedData)
+        {
+            var tag = new byte[16];
+            var cipherText = new byte[_bytes.Length];
+
+            using var aesGcm = new AesGcm(_key);
+            aesGcm.Encrypt(nonce, _bytes, cipherText, tag, asociatedData);
+
+            return (cipherText, tag);
+        }
+
+        public byte[] DecryptGcm(byte[] nonce, byte[] asociatedData, byte[] tag)
+        {
+            var decryptedData = new byte[_bytes.Length];
+
+            using var aesGcm = new AesGcm(_key);
+            aesGcm.Decrypt(nonce, _bytes, decryptedData, tag, asociatedData);
+
+            return decryptedData;
         }
     }
 }

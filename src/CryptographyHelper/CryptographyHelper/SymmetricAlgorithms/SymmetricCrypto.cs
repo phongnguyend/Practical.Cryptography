@@ -7,12 +7,7 @@ namespace CryptographyHelper.SymmetricAlgorithms
     {
         public static byte[] GenerateKey(int length = 128)
         {
-            using (RNGCryptoServiceProvider randomNumberGenerator = new RNGCryptoServiceProvider())
-            {
-                byte[] randomNumber = new byte[length];
-                randomNumberGenerator.GetBytes(randomNumber);
-                return randomNumber;
-            }
+            return RandomNumberGenerator.GetBytes(length);
         }
 
         protected byte[] _bytes;
