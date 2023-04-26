@@ -17,7 +17,7 @@ namespace CryptographyHelper.AsymmetricAlgorithms
             rsa.ImportParameters(xmlString.FromXmlString());
         }
 
-        public static void FromXmlString2(this System.Security.Cryptography.RSA rsa, string xmlString)
+        public static void FromXmlString2(this RSA rsa, string xmlString)
         {
             rsa.ImportParameters(xmlString.FromXmlString());
         }
@@ -27,7 +27,7 @@ namespace CryptographyHelper.AsymmetricAlgorithms
             return rsa.ExportParameters(includePrivateParameters).ToXmlString();
         }
 
-        public static string ToXmlString2(this System.Security.Cryptography.RSA rsa, bool includePrivateParameters)
+        public static string ToXmlString2(this RSA rsa, bool includePrivateParameters)
         {
             return rsa.ExportParameters(includePrivateParameters).ToXmlString();
         }
