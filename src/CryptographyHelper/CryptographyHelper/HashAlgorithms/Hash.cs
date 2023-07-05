@@ -49,7 +49,7 @@ namespace CryptographyHelper.HashAlgorithms
 
         public string ComputeHashedString()
         {
-            return ComputeHash().ToHashedString();
+            return ComputeHash().ToHexString();
         }
     }
 }

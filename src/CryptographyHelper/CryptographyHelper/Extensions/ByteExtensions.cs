@@ -34,9 +34,15 @@ namespace CryptographyHelper
             return areSame;
         }
 
+        [Obsolete("Please use ToHexString(byte[]) instead")]
         public static string ToHashedString(this byte[] data)
         {
-            return BitConverter.ToString(data).Replace("-", string.Empty);
+            return ToHexString(data);
+        }
+
+        public static string ToHexString(this byte[] data)
+        {
+            return Convert.ToHexString(data);
         }
 
         public static string ToBase64String(this byte[] data, Base64FormattingOptions formattingOptions = Base64FormattingOptions.None)
