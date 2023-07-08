@@ -47,10 +47,25 @@ namespace CryptographyHelper.HashAlgorithms
             }
         }
 
-        public string ComputeHashedString()
+        public string ComputeHashedString(StringFormat returnFormat = StringFormat.Hex)
         {
-            return ComputeHash().ToHexString();
+            switch (returnFormat)
+            {
+                case StringFormat.Hex:
+                    return ComputeHash().ToHexString();
+                case StringFormat.Base64:
+                    return ComputeHash().ToBase64String();
+                default:
+                    break;
+            }
+
+            return null; // TODO: throw UnreachableException() instead
+        }
+
+        public enum StringFormat
+        {
+            Hex,
+            Base64
         }
     }
 }
-
