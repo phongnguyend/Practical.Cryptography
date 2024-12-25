@@ -4,88 +4,87 @@ using CryptographyHelper.HashAlgorithms;
 using CryptographyHelper.SymmetricAlgorithms;
 using Xunit;
 
-namespace CryptographyHelper.Tests.SymmetricAlgorithms
+namespace CryptographyHelper.Tests.SymmetricAlgorithms;
+
+public class DDDESTests
 {
-    public class DDDESTests
+    [Fact]
+    public void Encrypt()
     {
-        [Fact]
-        public void Encrypt()
-        {
-            // Arrange
-            const string original = "Text to encrypt";
-            var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
-            var iv = "Z1kmtPGvz1g=".FromBase64String();
+        // Arrange
+        const string original = "Text to encrypt";
+        var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
+        var iv = "Z1kmtPGvz1g=".FromBase64String();
 
-            // Act
-            var encrypted = original
+        // Act
+        var encrypted = original
+            .UseTripleDES(key)
+            .WithCipher(CipherMode.ECB)
+            .WithPadding(PaddingMode.PKCS7)
+            .WithIV(iv)
+            .Encrypt();
+
+        // Assert
+        Assert.Equal("BMAQOzU6W/qAZBoRMlauWg==", encrypted.ToBase64String());
+    }
+
+    [Fact]
+    public void Decrypt()
+    {
+        // Arrange
+        var encrypted = "BMAQOzU6W/qAZBoRMlauWg==".FromBase64String();
+        var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
+        var iv = "Z1kmtPGvz1g=".FromBase64String();
+
+        // Act
+        var decrypted = encrypted
+            .UseTripleDES(key)
+            .WithCipher(CipherMode.ECB)
+            .WithPadding(PaddingMode.PKCS7)
+            .WithIV(iv)
+            .Decrypt();
+        
+        // Assert
+        Assert.Equal("Text to encrypt", decrypted.GetString());
+    }
+
+    [Fact]
+    public void EncryptDecryptFile()
+    {
+        // Arrange
+        const string originalFileName = "SymmetricAlgorithms/File.xlsx";
+        const string encryptedFileName = "SymmetricAlgorithms/EncryptedDDDES.xlsx";
+        const string decryptedFileName = "SymmetricAlgorithms/DecryptedDDDES.xlsx";
+        var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
+        var iv = "Z1kmtPGvz1g=".FromBase64String();
+
+        // Act
+        using var inputStream = File.OpenRead(originalFileName);
+        using var outputStream = File.OpenWrite(encryptedFileName);
+        {
+            inputStream
                 .UseTripleDES(key)
                 .WithCipher(CipherMode.ECB)
                 .WithPadding(PaddingMode.PKCS7)
                 .WithIV(iv)
-                .Encrypt();
-
-            // Assert
-            Assert.Equal("BMAQOzU6W/qAZBoRMlauWg==", encrypted.ToBase64String());
+                .Encrypt(outputStream);
         }
 
-        [Fact]
-        public void Decrypt()
+        using var inputStream2 = File.OpenRead(encryptedFileName);
+        using var outputStream2 = File.OpenWrite(decryptedFileName);
         {
-            // Arrange
-            var encrypted = "BMAQOzU6W/qAZBoRMlauWg==".FromBase64String();
-            var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
-            var iv = "Z1kmtPGvz1g=".FromBase64String();
-
-            // Act
-            var decrypted = encrypted
+            inputStream2
                 .UseTripleDES(key)
                 .WithCipher(CipherMode.ECB)
                 .WithPadding(PaddingMode.PKCS7)
                 .WithIV(iv)
-                .Decrypt();
-            
-            // Assert
-            Assert.Equal("Text to encrypt", decrypted.GetString());
+                .Decrypt(outputStream2);
         }
 
-        [Fact]
-        public void EncryptDecryptFile()
-        {
-            // Arrange
-            const string originalFileName = "SymmetricAlgorithms/File.xlsx";
-            const string encryptedFileName = "SymmetricAlgorithms/EncryptedDDDES.xlsx";
-            const string decryptedFileName = "SymmetricAlgorithms/DecryptedDDDES.xlsx";
-            var key = "e0x8U5MyotKHiY1uxqxurg==".FromBase64String();
-            var iv = "Z1kmtPGvz1g=".FromBase64String();
+        var hashed1 = originalFileName.ToFileInfo().UseMd5().ComputeHashedString();
+        var hashed2 = decryptedFileName.ToFileInfo().UseMd5().ComputeHashedString();
 
-            // Act
-            using var inputStream = File.OpenRead(originalFileName);
-            using var outputStream = File.OpenWrite(encryptedFileName);
-            {
-                inputStream
-                    .UseTripleDES(key)
-                    .WithCipher(CipherMode.ECB)
-                    .WithPadding(PaddingMode.PKCS7)
-                    .WithIV(iv)
-                    .Encrypt(outputStream);
-            }
-
-            using var inputStream2 = File.OpenRead(encryptedFileName);
-            using var outputStream2 = File.OpenWrite(decryptedFileName);
-            {
-                inputStream2
-                    .UseTripleDES(key)
-                    .WithCipher(CipherMode.ECB)
-                    .WithPadding(PaddingMode.PKCS7)
-                    .WithIV(iv)
-                    .Decrypt(outputStream2);
-            }
-
-            var hashed1 = originalFileName.ToFileInfo().UseMd5().ComputeHashedString();
-            var hashed2 = decryptedFileName.ToFileInfo().UseMd5().ComputeHashedString();
-
-            // Assert
-            Assert.Equal(hashed1, hashed2);
-        }
+        // Assert
+        Assert.Equal(hashed1, hashed2);
     }
 }
