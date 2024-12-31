@@ -10,10 +10,12 @@ public class CertificateOption
 
     public string Password { get; set; }
 
+    public X509KeyStorageFlags? X509KeyStorageFlags { get; set; }
+
     public X509Certificate2 FindCertificate()
     {
         return !string.IsNullOrWhiteSpace(Thumbprint)
             ? CertificateStore.Find(Thumbprint)
-            : CertificateFile.Find(Path, Password);
+            : CertificateFile.Find(Path, Password, X509KeyStorageFlags);
     }
 }
