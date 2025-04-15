@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -54,7 +55,7 @@ public static class CertificateManager
         File.WriteAllText(fileName, pem);
     }
 
-    public static X509Certificate2 GenerateSelfSignedCertificate(string subjectName)
+    public static X509Certificate2 GenerateSelfSignedCertificate(string subjectName, string[] sanList = null)
     {
         using RSA rsa = RSA.Create(2048);
         var request = new CertificateRequest(
@@ -68,6 +69,24 @@ public static class CertificateManager
         request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, false));
 
         request.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(request.PublicKey, false));
+
+        if (sanList != null && sanList.Length > 0)
+        {
+            // Add Subject Alternative Names (SAN)
+            var sanBuilder = new SubjectAlternativeNameBuilder();
+            foreach (var san in sanList)
+            {
+                if (IPAddress.TryParse(san, out var ip))
+                {
+                    sanBuilder.AddIpAddress(ip);
+                }
+                else
+                {
+                    sanBuilder.AddDnsName(san);
+                }
+            }
+            request.CertificateExtensions.Add(sanBuilder.Build());
+        }
 
         // NotBefore: Now -1 day; NotAfter: Now + 365 days
         var cert = request.CreateSelfSigned(
